@@ -1,0 +1,15 @@
+*
+!config.yaml
+!.gitignore
+!LICENCE
+!README.md
+!CHANGELOG.md
+!Snakefile
+!scripts
+!scripts/*
+!report
+!report/*
+!rules
+!rules/*
+!schemas
+!schemas/*
