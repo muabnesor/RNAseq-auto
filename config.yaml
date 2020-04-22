@@ -1,2 +1,16 @@
 working_dir: ""
+
+# Container images
+container_dir: "containers/"
+
+# reference files
 reference_dir: "references/"
+genome_file: "Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+genome_url: "ftp://ftp.ensembl.org/pub/release-99/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz"
+transcripts_file: "Homo_sapiens.GRCh38.99.gtf"
+transcripts_url: "ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz"
+
+
+# rule star_index
+read_length: 151
+star_index_threads: 8
