@@ -5,16 +5,25 @@ include: "rules/common.smk"
 
 configfile: "config.yaml"
 
-working_dir = str(Path(config["working_dir"]))
+data_dir = str(Path(config["data_dir"]))
+analysis_dir = str(Path(config["analysis_dir"]))
 reference_dir = str(Path(config["reference_dir"]))
-containers_dir = str(Path(config["container_dir"]))
+container_dir = str(Path(config["container_dir"]))
 
-align_dir = expand_path(working_dir, "align")
-results_dir = expand_path(working_dir, "results")
+# Set analysis subdirectories
+trim_galore_dir = expand_path(analysis_dir, "trim_galore")
+align_dir = expand_path(analysis_dir, "align")
+
+# Parse base directory
+fastq_dict = get_fastq_dict(base_dir=Path(data_dir),
+                            fastq1_suffix=config["fastq1_suffix"],
+                            fastq2_suffix=config["fastq2_suffix"])
+print(fastq_dict)
+sample_names = list(fastq_dict.keys())
 
 rule all:
     input:
-        expand_path(results_dir, "results.txt")
+        expand(f"{trim_galore_dir}/{{sample}}", sample=sample_names)
 
 report: "report/workflow.rst"
 
@@ -22,10 +31,10 @@ report: "report/workflow.rst"
 include: "rules/download.smk"
 
 # Building singularity containers
-#include: "rules/containers.smk"
+include: "rules/containers.smk"
 
 # Preprocessing fastq-files
-#include: "rules/preprocess"
+include: "rules/preprocess.smk"
 
 # Indexing reference genome
 include: "rules/index.smk"

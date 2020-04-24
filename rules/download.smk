@@ -1,3 +1,8 @@
+rule download_all:
+    input:
+        genome_path = expand_path(reference_dir, config["genome_file"]),
+        transcripts_path = expand_path(reference_dir, config["transcripts_file"])
+
 rule download_genome:
     params:
         genome_url = config["genome_url"]
