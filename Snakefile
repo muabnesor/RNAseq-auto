@@ -5,6 +5,7 @@ include: "rules/common.smk"
 
 configfile: "config.yaml"
 
+# Set base directories
 data_dir = str(Path(config["data_dir"]))
 analysis_dir = str(Path(config["analysis_dir"]))
 reference_dir = str(Path(config["reference_dir"]))
@@ -21,9 +22,6 @@ fastq_dict = get_fastq_dict(base_dir=Path(data_dir),
 print(fastq_dict)
 sample_names = list(fastq_dict.keys())
 
-rule all:
-    input:
-        expand(f"{trim_galore_dir}/{{sample}}", sample=sample_names)
 
 report: "report/workflow.rst"
 

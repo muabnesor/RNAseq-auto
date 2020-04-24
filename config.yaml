@@ -1,8 +1,14 @@
+# Directory where data is found
 data_dir: ""
+
+# fastq file suffices
 fastq1_suffix: "R1_001.fastq.gz"
 fastq2_suffix: "R2_001.fastq.gz"
 
+# Directory where analysis is done
 analysis_dir: "analysis/"
+
+
 
 # Container images
 container_dir: "containers/"
