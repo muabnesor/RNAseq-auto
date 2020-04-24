@@ -1,16 +1,30 @@
-working_dir: ""
+data_dir: ""
+fastq1_suffix: "R1_001.fastq.gz"
+fastq2_suffix: "R2_001.fastq.gz"
+
+analysis_dir: "analysis/"
 
 # Container images
 container_dir: "containers/"
 
+star_image: "star.sif"
+star_container_url: "docker://muabnessor/star/0.1.0"
+
+preprocess_image: "preprocess.sif"
+preprocess_container_url: "docker://muabnessor/preprocess/0.1.0"
+
 # reference files
 reference_dir: "references/"
+
 genome_file: "Homo_sapiens.GRCh38.dna.primary_assembly.fa"
 genome_url: "ftp://ftp.ensembl.org/pub/release-99/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz"
+
 transcripts_file: "Homo_sapiens.GRCh38.99.gtf"
 transcripts_url: "ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz"
-
 
 # rule star_index
 read_length: 151
 star_index_threads: 8
+
+# rule trim
+adapter_sequence: ACGTAGCTAGAT
