@@ -9,15 +9,14 @@ rule trim_all:
         expand(f"{trim_galore_dir}/{{sample}}", sample=sample_names)
 
 rule trim:
-
-    singularity:
-        f"{container_dir}/{config['preprocess_image']}"
-
     input:
         get_fastqs
 
     output:
         f"{trim_galore_dir}/{{sample}}"
+    
+    singularity:
+        f"{container_dir}/{config['preprocess_image']}"
 
     shell:
         "trim_galore --illumina --paired --fastqc -o {output} "

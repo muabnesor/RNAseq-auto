@@ -1,9 +1,4 @@
-
 rule star_index:
-
-    singularity:
-        f"{container_dir}/{config['star_image']}"
-
     input:
         genome_fasta = expand_path(reference_dir, config["genome_file"]),
         annotation_gtf = expand_path(reference_dir, config['transcripts_file'])
@@ -14,6 +9,9 @@ rule star_index:
     params:
         index_threads = str(config["star_index_threads"]),
         index_read_length = str(config["read_length"])
+
+    singularity:
+        f"{container_dir}/{config['star_image']}"
 
     shell:
         "mkdir {output.genome_dir} && "
