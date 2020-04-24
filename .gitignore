@@ -13,3 +13,5 @@
 !rules/*
 !schemas
 !schemas/*
+!VERSION
+!.bumpversion.cfg
