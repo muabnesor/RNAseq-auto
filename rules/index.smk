@@ -3,7 +3,7 @@ rule star_index:
 
     singularity:
         f"{container_dir}/{config['star_image']}"
-        
+
     input:
         genome_fasta = expand_path(reference_dir, config["genome_file"]),
         annotation_gtf = expand_path(reference_dir, config['transcripts_file'])
