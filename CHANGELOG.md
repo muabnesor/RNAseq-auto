@@ -1,6 +1,14 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## Singularity fix (v.0.0.1) [2020-04-24]
+### fixed
+- Add singularity images to star_index, and trim rules
+
+### Added
+- add bumpversion config file to repo
+- add VERSION file
+
 ## Add Rules [2020-04-24]
 ### Added
 - create preprocessing rules
