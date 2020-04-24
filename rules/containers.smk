@@ -1,5 +1,3 @@
-print("HEHEHE")
-print(container_dir)
 rule build_all_containers:
     input:
         star_sif = expand_path(container_dir, config["star_image"]),

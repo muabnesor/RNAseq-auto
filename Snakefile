@@ -19,9 +19,7 @@ align_dir = expand_path(analysis_dir, "align")
 fastq_dict = get_fastq_dict(base_dir=Path(data_dir),
                             fastq1_suffix=config["fastq1_suffix"],
                             fastq2_suffix=config["fastq2_suffix"])
-print(fastq_dict)
 sample_names = list(fastq_dict.keys())
-
 
 report: "report/workflow.rst"
 
