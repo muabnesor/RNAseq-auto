@@ -8,10 +8,10 @@ analysis_dir: "analysis/"
 container_dir: "containers/"
 
 star_image: "star.sif"
-star_container_url: "docker://muabnessor/star/0.1.0"
+star_container_url: "docker://muabnessor/star:0.1.0"
 
 preprocess_image: "preprocess.sif"
-preprocess_container_url: "docker://muabnessor/preprocess/0.1.0"
+preprocess_container_url: "docker://muabnessor/preprocess:0.1.0"
 
 # reference files
 reference_dir: "references/"
