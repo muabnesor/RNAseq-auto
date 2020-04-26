@@ -1,7 +1,11 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
-## Singularity fix (v.0.0.1) [2020-04-24]
+## v0.1.0 [2020-04-26]
+### Added
+- support for slurm configuration
+
+## Singularity fix (v0.0.1) [2020-04-24]
 ### fixed
 - Add singularity images to star_index, and trim rules
 

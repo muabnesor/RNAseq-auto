@@ -1,0 +1,15 @@
+__default__:
+  account: "project_name"
+  time: "00:30:00"
+  n: "1"
+  partition: "core"
+  output: "{params.slurm_log_dir}/{rule}.{wildcards}.out"
+  error: "{params.slurm_log_dir}/{rule}.{wildcards}.err"
+
+star_index:
+  name: "{rule}"
+  n: "16"
+  time: "08:00:00"
+
+trim:
+  time: "04:00:00"

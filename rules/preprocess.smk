@@ -14,9 +14,12 @@ rule trim:
 
     output:
         f"{trim_galore_dir}/{{sample}}"
-    
+
     singularity:
         f"{container_dir}/{config['preprocess_image']}"
+
+    params:
+        slurm_log_dir = f"{analysis_dir}/logs/trim/slurm/"
 
     shell:
         "trim_galore --illumina --paired --fastqc -o {output} "

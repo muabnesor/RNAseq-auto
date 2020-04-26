@@ -7,15 +7,16 @@ rule star_index:
         genome_dir = expand_path(reference_dir, "star_genome")
 
     params:
-        index_threads = str(config["star_index_threads"]),
-        index_read_length = str(config["read_length"])
+        index_read_length = str(config["read_length"]),
+        n_cores = cluster_config["star_index"]["n"],
+        slurm_log_dir = f"{analysis_dir}/logs/star_index/slurm/"
 
     singularity:
         f"{container_dir}/{config['star_image']}"
 
     shell:
         "mkdir {output.genome_dir} && "
-        "STAR --runThreadN {params.index_threads} "
+        "STAR --runThreadN {params.n_cores} "
         "--runMode genomeGenerate "
         "--genomeDir {output.genome_dir} "
         "--genomeFastaFiles {input.genome_fasta} "
