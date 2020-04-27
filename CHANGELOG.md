@@ -1,6 +1,10 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v.0.2.0 [2020-04-27]
+### Added
+- trimmed_multiqc rule
+
 ## v0.1.1 [2020-04-27]
 ### Fixed
 - pipeline now find the sample names in samples.tsv with first row specifying sample names
