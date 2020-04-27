@@ -24,3 +24,19 @@ rule trim:
     shell:
         "trim_galore --illumina --paired --fastqc -o {output} "
         "{input}"
+
+rule trimmed_multiqc:
+    input:
+        expand(f"{trim_galore_dir}/{{sample}}/fastqc.txt", sample=sample_names)
+
+    output:
+        f"{trim_galore_dir}/multiqc.html"
+
+    singularity:
+        f"{container_dir}/{config['preprocess_image']}"
+
+    params:
+        slurm_log_dir = f"{analysis_dir}/logs/trim/slurm/"
+
+    shell:
+        "multiqc {input} -o {output}"

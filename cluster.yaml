@@ -12,4 +12,9 @@ star_index:
   time: "08:00:00"
 
 trim:
+  name: "{rule}.{wildcards.sample}"
   time: "04:00:00"
+
+trimmet_multiqc:
+  name: "{rule}"
+  time: "00:30:00"
