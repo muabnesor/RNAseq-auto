@@ -19,10 +19,10 @@ rule trim:
         f"{container_dir}/{config['preprocess_image']}"
 
     params:
-        slurm_log_dir = f"{analysis_dir}/logs/trim/slurm/"
+        slurm_log_dir = f"{log_dir}/slurm/"
 
     shell:
-        "trim_galore --illumina --paired --fastqc -o {output} "
+        "mkdir -p {output} && trim_galore --illumina --paired --fastqc -o {output} "
         "{input}"
 
 rule trimmed_multiqc:

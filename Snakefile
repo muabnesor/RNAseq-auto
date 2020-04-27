@@ -11,6 +11,7 @@ data_dir = str(Path(config["data_dir"]))
 analysis_dir = str(Path(config["analysis_dir"]))
 reference_dir = str(Path(config["reference_dir"]))
 container_dir = str(Path(config["container_dir"]))
+log_dir = str(Path(config["log_dir"]))
 
 # Set analysis subdirectories
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")

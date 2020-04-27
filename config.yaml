@@ -8,7 +8,8 @@ fastq2_suffix: "R2_001.fastq.gz"
 # Directory where analysis is done
 analysis_dir: "analysis/"
 
-
+# Log dir
+analysis_dir: "analysis/log/"
 
 # Container images
 container_dir: "containers/"
