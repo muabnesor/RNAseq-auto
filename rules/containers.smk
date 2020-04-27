@@ -9,7 +9,7 @@ rule build_star:
     output:
         sif_file = expand_path(container_dir, config["star_image"])
     shell:
-        "singularity build {output.sif_file} {params.image_url}"
+        "sudo singularity build {output.sif_file} {params.image_url}"
 
 rule build_preprocess:
     params:
@@ -17,4 +17,4 @@ rule build_preprocess:
     output:
         sif_file = expand_path(container_dir, config["preprocess_image"])
     shell:
-        "singularity build {output.sif_file} {params.image_url}"
+        "sudo singularity build {output.sif_file} {params.image_url}"

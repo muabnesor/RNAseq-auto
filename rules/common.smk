@@ -8,7 +8,7 @@ def get_fastq_dict(base_dir: Path, fastq1_suffix: str, fastq2_suffix: str, sampl
     for sub_dir in base_dir.iterdir():
         if not sub_dir.is_dir():
             continue
-        sample_name = sub_dir.name.split("-")[-1]
+        sample_name = sub_dir.name.split("_")[-1]
         if sample_name not in sample_names:
             continue
         sample_dict = dict()
