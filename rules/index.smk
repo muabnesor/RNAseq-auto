@@ -9,7 +9,7 @@ rule star_index:
     params:
         index_read_length = str(config["read_length"]),
         n_cores = cluster_config["star_index"]["n"],
-        slurm_log_dir = f"{analysis_dir}/logs/star_index/slurm/"
+        slurm_log_dir = f"{log_dir}/slurm/"
 
     singularity:
         f"{container_dir}/{config['star_image']}"

@@ -36,7 +36,7 @@ rule trimmed_multiqc:
         f"{container_dir}/{config['preprocess_image']}"
 
     params:
-        slurm_log_dir = f"{analysis_dir}/logs/trim/slurm/"
+        slurm_log_dir = f"{log_dir}/slurm/"
 
     shell:
         "multiqc {input} -o {output}"
