@@ -1,4 +1,5 @@
 from pathlib import Path
+import pandas as pd
 
 # Include common python functions
 include: "rules/common.smk"
@@ -15,11 +16,17 @@ container_dir = str(Path(config["container_dir"]))
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")
 align_dir = expand_path(analysis_dir, "align")
 
+# get sample data
+sample_data = config.get("sample_data") or expand_path(data_dir, "samples.tsv")
+coldata = pd.read_table(sample_data)
+
+sample_names = list(coldata.loc[:, "sample"])
+
 # Parse base directory
 fastq_dict = get_fastq_dict(base_dir=Path(data_dir),
                             fastq1_suffix=config["fastq1_suffix"],
-                            fastq2_suffix=config["fastq2_suffix"])
-sample_names = list(fastq_dict.keys())
+                            fastq2_suffix=config["fastq2_suffix"],
+                            sample_names=sample_names)
 
 report: "report/workflow.rst"
 
