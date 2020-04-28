@@ -33,7 +33,7 @@ rule star_align:
         "--runThreadN {threads} "
         "--readFilesIn {input.fastqs} "
         "--outFileNamePrefix {output.align_dir}/ "
-        "--outSamType BAM SortedByCoordinate "
+        "--outSAMtype BAM SortedByCoordinate "
         "--outSAMunmapped Within "
         "--outSAMattributes Standard "
         "--readFilesCommand zcat "
