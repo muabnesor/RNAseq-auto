@@ -1,6 +1,11 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v.0.3.0 [2020-04-28]
+### Added
+- Added alignment rule
+- added multiqc rule for trimmed data
+
 ## v.0.2.0 [2020-04-27]
 ### Added
 - trimmed_multiqc rule
