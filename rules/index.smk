@@ -8,7 +8,7 @@ rule star_index:
 
     params:
         index_read_length = str(config["read_length"]),
-        slurm_log_dir = f"{log_dir}/slurm/"
+        slurm_log_dir = f"{str(slurm_logdir_index)}"
 
     singularity:
         f"{container_dir}/{config['star_image']}"

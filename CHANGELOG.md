@@ -1,6 +1,10 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v.0.4.0 [2020-04-28]
+### Added
+- Better structure for slurm logs
+
 ## v.0.3.0 [2020-04-28]
 ### Added
 - Added alignment rule

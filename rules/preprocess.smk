@@ -19,7 +19,7 @@ rule trim:
     singularity:
         f"{container_dir}/{config['preprocess_image']}"
     params:
-        slurm_log_dir = f"{log_dir}/slurm/",
+        slurm_log_dir = f"{str(slurm_logdir_preprocess)}",
         trim_dir = directory(f"{trim_galore_dir}/{{sample}}/")
 
     shell:
@@ -37,7 +37,7 @@ rule trimmed_multiqc:
         f"{container_dir}/{config['preprocess_image']}"
 
     params:
-        slurm_log_dir = f"{log_dir}/slurm/"
+        slurm_log_dir = f"{str(slurm_logdir_preprocess)}"
 
     shell:
         "mkdir -p {output} && "

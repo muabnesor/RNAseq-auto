@@ -13,6 +13,19 @@ reference_dir = str(Path(config["reference_dir"]))
 container_dir = str(Path(config["container_dir"]))
 log_dir = str(Path(config["log_dir"]))
 
+# Create slurm log dirs
+slurm_logdir = Path(log_dir).joinpath("slurm")
+
+slurm_logdir_preprocess = Path(slurm_logdir).joinpath("preprocess")
+slurm_logdir_preprocess.mkdir(parents=True)
+
+slurm_logdir_index = Path(slurm_logdir).joinpath("index")
+slurm_logdir_index.mkdir(parents=True)
+
+slurm_logdir_align = Path(slurm_logdir).joinpath("align")
+slurm_logdir_align.mkdir(parents=True)
+
+
 # Set analysis subdirectories
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")
 align_dir = expand_path(analysis_dir, "align")

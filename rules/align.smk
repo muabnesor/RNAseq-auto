@@ -20,7 +20,7 @@ rule star_align:
     output:
         align_dir = directory(f"{align_dir}/{{sample}}")
     params:
-        slurm_log_dir = f"{log_dir}/slurm/"
+        slurm_log_dir = f"{str(slurm_logdir_align)}"
 
     singularity:
         f"{container_dir}/{config['star_image']}"
