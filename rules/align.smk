@@ -28,7 +28,7 @@ rule star_align:
     threads: config["star_align_threads"]
 
     shell:
-        "mkdir -p {output.align_dir}"
+        "mkdir -p {output.align_dir} "
         "STAR --genomeDir {input.reference_dir} "
         "--runThreadN {threads} "
         "--readFilesIn {input.fastqs} "
