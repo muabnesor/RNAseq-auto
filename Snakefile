@@ -44,7 +44,7 @@ include: "rules/preprocess.smk"
 include: "rules/index.smk"
 
 # Aligning reads with STAR
-#include: "rules/align.smk"
+include: "rules/align.smk"
 
 # Quality check of aligned reads
 #include: "rules/qc.smk"

@@ -9,7 +9,7 @@ fastq2_suffix: "R2_001.fastq.gz"
 analysis_dir: "analysis/"
 
 # Log dir
-analysis_dir: "analysis/log/"
+log_dir: "analysis/log/"
 
 # Container images
 container_dir: "containers/"
@@ -30,8 +30,13 @@ transcripts_file: "Homo_sapiens.GRCh38.99.gtf"
 transcripts_url: "ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz"
 
 # rule star_index
-read_length: 151
-star_index_threads: 8
+read_length: 150
+star_index_threads: 16
 
-# rule trim
-adapter_sequence: ACGTAGCTAGAT
+# Trimming
+pre_trim_fastq: False
+fastq1_suffix_trimmed: "R1_001_val_1.fq.gz"
+fastq2_suffix_trimmed: "R2_001_val_2.fq.gz"
+
+# Align
+star_align_threads: 8

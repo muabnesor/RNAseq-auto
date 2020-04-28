@@ -9,12 +9,17 @@ __default__:
 star_index:
   name: "{rule}"
   n: "16"
-  time: "08:00:00"
+  time: "04:00:00"
 
 trim:
   name: "{rule}.{wildcards.sample}"
-  time: "04:00:00"
+  time: "07:00:00"
 
 trimmet_multiqc:
   name: "{rule}"
   time: "00:30:00"
+
+star_align:
+  name: "{rule}.{wildcards.sample}"
+  time: "04:00:00"
+  n: "8"

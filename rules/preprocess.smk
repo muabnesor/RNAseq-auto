@@ -13,24 +13,25 @@ rule trim:
         get_fastqs
 
     output:
-        f"{trim_galore_dir}/{{sample}}"
+        fastq_first = f"{trim_galore_dir}/{{sample}}/{{sample}}_{{lane}}{config['fastq1_suffix_trimmed']}",
+        fastq_second = f"{trim_galore_dir}/{{sample}}/{{sample}}_{{lane}}{config['fastq2_suffix_trimmed']}",
 
     singularity:
         f"{container_dir}/{config['preprocess_image']}"
-
     params:
-        slurm_log_dir = f"{log_dir}/slurm/"
+        slurm_log_dir = f"{log_dir}/slurm/",
+        trim_dir = directory(f"{trim_galore_dir}/{{sample}}/")
 
     shell:
-        "mkdir -p {output} && trim_galore --illumina --paired --fastqc -o {output} "
+        "mkdir -p {params.trim_dir} && trim_galore --illumina --paired --fastqc -o {params.trim_dir} "
         "{input}"
 
 rule trimmed_multiqc:
     input:
-        expand(f"{trim_galore_dir}/{{sample}}/fastqc.txt", sample=sample_names)
+        expand(f"{trim_galore_dir}/{{sample}}/", sample=sample_names)
 
     output:
-        f"{trim_galore_dir}/multiqc.html"
+        directory(f"{trim_galore_dir}/multiqc")
 
     singularity:
         f"{container_dir}/{config['preprocess_image']}"
@@ -39,4 +40,5 @@ rule trimmed_multiqc:
         slurm_log_dir = f"{log_dir}/slurm/"
 
     shell:
-        "multiqc {input} -o {output}"
+        "mkdir -p {output} && "
+        "multiqc {input} -o {output}/"
