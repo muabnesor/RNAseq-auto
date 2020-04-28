@@ -17,13 +17,13 @@ log_dir = str(Path(config["log_dir"]))
 slurm_logdir = Path(log_dir).joinpath("slurm")
 
 slurm_logdir_preprocess = Path(slurm_logdir).joinpath("preprocess")
-slurm_logdir_preprocess.mkdir(parents=True)
+slurm_logdir_preprocess.mkdir(parents=True, exist_ok=True)
 
 slurm_logdir_index = Path(slurm_logdir).joinpath("index")
-slurm_logdir_index.mkdir(parents=True)
+slurm_logdir_index.mkdir(parents=True, exist_ok=True)
 
 slurm_logdir_align = Path(slurm_logdir).joinpath("align")
-slurm_logdir_align.mkdir(parents=True)
+slurm_logdir_align.mkdir(parents=True, exist_ok=True)
 
 
 # Set analysis subdirectories
