@@ -18,3 +18,11 @@ rule build_preprocess:
         sif_file = expand_path(container_dir, config["preprocess_image"])
     shell:
         "sudo singularity build {output.sif_file} {params.image_url}"
+
+rule build_samtools:
+    params:
+        image_url = config['samtools_container_url']
+    output:
+        sif_file = expand_path(container_dir, config["samtools_image"])
+    shell:
+        "sudo singularity build {output.sif_file} {params.image_url}"

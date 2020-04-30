@@ -21,5 +21,8 @@ trimmet_multiqc:
 
 star_align:
   name: "{rule}.{wildcards.sample}"
-  time: "04:00:00"
+  time: "05:00:00"
   n: "8"
+
+bam_index:
+  name: "{rule}.{wildcards.sample}"

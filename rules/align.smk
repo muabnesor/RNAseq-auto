@@ -10,7 +10,7 @@ def get_fastqs(wildcards):
 
 rule star_align_all:
     input:
-        expand(f"{align_dir}/{{sample}}", sample=sample_names)
+        expand(f"{align_dir}/{{sample}}.bam.bai", sample=sample_names)
 
 rule star_align:
     input:
@@ -39,3 +39,17 @@ rule star_align:
         "--readFilesCommand zcat "
         "--twopassMode Basic "
         "--chimSegmentMin 20"
+
+rule bam_index:
+    input:
+        bam_dir = f"{align_dir}/{{sample}}"
+    output:
+        bam_dir = f"{align_dir}/{{sample}}.bam.bai"
+    params:
+        slurm_log_dir = f"{str(slurm_logdir_align)}",
+        align_dir = f"{align_dir}"
+    singularity:
+        f"{container_dir}/{config['samtools_image']}"
+    shell:
+        "mv {input.bam_dir}/Aligned.sortedByCoord.out.bam {params.align_dir}/{wildcards.sample}.bam && "
+        "samtools index {params.align_dir}/{wildcards.sample}.bam"
