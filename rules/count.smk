@@ -18,5 +18,5 @@ rule count_genes:
         slurm_log_dir = f"{str(slurm_logdir_align)}"
 
     shell:
-        "htseq-count -s reverse -f bam {input.bam_file} {input.annotation_gtf} "
+        "htseq-count -s reverse -f bam -r pos {input.bam_file} {input.annotation_gtf} "
         "> {output.count_file}"
