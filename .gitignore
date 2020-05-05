@@ -16,3 +16,4 @@
 !schemas/*
 !VERSION
 !.bumpversion.cfg
+!slurm-status.py
