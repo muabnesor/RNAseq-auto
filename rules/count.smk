@@ -15,7 +15,7 @@ rule count_genes:
         f"{container_dir}/{config['containers']['htseq_image']}"
 
     params:
-        slurm_log_dir = f"{str(slurm_logdir_align)}"
+        slurm_log_dir = f"{str(slurm_logdir_count)}"
 
     shell:
         "htseq-count -s reverse -f bam -r pos {input.bam_file} {input.annotation_gtf} "
