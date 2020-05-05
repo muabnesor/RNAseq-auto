@@ -1,6 +1,16 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v0.6.0 [2020-05-05]
+### Added
+- gene count rule
+- HTSeq container
+
+### Fixed
+- star command
+- config indentation
+- bam index threads
+
 ## v.0.5.0 [2020-04-30]
 ### Added
 - bam index rule
