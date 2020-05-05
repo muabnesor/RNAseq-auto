@@ -25,7 +25,7 @@ slurm_logdir_index.mkdir(parents=True, exist_ok=True)
 slurm_logdir_align = Path(slurm_logdir).joinpath("align")
 slurm_logdir_align.mkdir(parents=True, exist_ok=True)
 
-slurm_logdir_count = Path(slurm_logdir).joinpath("align")
+slurm_logdir_count = Path(slurm_logdir).joinpath("count")
 slurm_logdir_count.mkdir(parents=True, exist_ok=True)
 
 # Set analysis subdirectories
