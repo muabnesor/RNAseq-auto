@@ -27,4 +27,9 @@ star_align:
 bam_index:
   name: "{rule}.{wildcards.sample}"
   time: "01:00:00"
+  n: "2"
+
+count:
+  name: "{rule}.{wildcards.sample}"
+  time: "01:00:00"
   n: "1"

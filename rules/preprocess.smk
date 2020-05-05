@@ -17,10 +17,10 @@ rule trim:
         fastq_second = f"{trim_galore_dir}/{{sample}}/{{sample}}_{{lane}}{config['fastq2_suffix_trimmed']}",
 
     singularity:
-        f"{container_dir}/{config['preprocess_image']}"
+        f"{container_dir}/{config['containers']['preprocess_image']}"
     params:
         slurm_log_dir = f"{str(slurm_logdir_preprocess)}",
-        trim_dir = directory(f"{trim_galore_dir}/{{sample}}/")
+        trim_dir = f"{trim_galore_dir}/{{sample}}/"
 
     shell:
         "mkdir -p {params.trim_dir} && trim_galore --illumina --paired --fastqc -o {params.trim_dir} "
@@ -34,7 +34,7 @@ rule trimmed_multiqc:
         directory(f"{trim_galore_dir}/multiqc")
 
     singularity:
-        f"{container_dir}/{config['preprocess_image']}"
+        f"{container_dir}/{config['containers']['preprocess_image']}"
 
     params:
         slurm_log_dir = f"{str(slurm_logdir_preprocess)}"

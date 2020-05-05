@@ -18,38 +18,41 @@ rule star_align:
         reference_dir = expand_path(reference_dir, "star_genome")
 
     output:
-        align_dir = directory(f"{align_dir}/{{sample}}")
+        star_dir = directory(f"{align_dir}/{{sample}}"),
+        bam_file = f"{align_dir}/{{sample}}.bam"
     params:
         slurm_log_dir = f"{str(slurm_logdir_align)}"
 
     singularity:
-        f"{container_dir}/{config['star_image']}"
+        f"{container_dir}/{config['containers']['star_image']}"
 
-    threads: config["star_align_threads"]
+    threads: config['align']["star_align_threads"]
 
     shell:
-        "mkdir -p {output.align_dir} "
+        "mkdir -p {output.star_dir} &&"
         "STAR --genomeDir {input.reference_dir} "
         "--runThreadN {threads} "
         "--readFilesIn {input.fastqs} "
-        "--outFileNamePrefix {output.align_dir}/ "
+        "--outFileNamePrefix {output.star_dir}/ "
         "--outSAMtype BAM SortedByCoordinate "
         "--outSAMunmapped Within "
         "--outSAMattributes Standard "
         "--readFilesCommand zcat "
         "--twopassMode Basic "
-        "--chimSegmentMin 20"
+        "--chimSegmentMin 20 && "
+        "mv {output.star_dir}/Aligned.sortedByCoord.out.bam {output.bam_file}"
 
 rule bam_index:
     input:
-        bam_dir = f"{align_dir}/{{sample}}"
+        bam_file = f"{align_dir}/{{sample}}.bam"
     output:
-        bam_dir = f"{align_dir}/{{sample}}.bam.bai"
+        bai_file = f"{align_dir}/{{sample}}.bam.bai"
     params:
         slurm_log_dir = f"{str(slurm_logdir_align)}",
         align_dir = f"{align_dir}"
+
+    threads: config["bam_index"]["bam_index_threads"]
     singularity:
-        f"{container_dir}/{config['samtools_image']}"
+        f"{container_dir}/{config['containers']['samtools_image']}"
     shell:
-        "mv {input.bam_dir}/Aligned.sortedByCoord.out.bam {params.align_dir}/{wildcards.sample}.bam && "
-        "samtools index {params.align_dir}/{wildcards.sample}.bam"
+        "samtools index -@ {threads} {input.bam_file}"
