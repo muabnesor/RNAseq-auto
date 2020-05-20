@@ -3,8 +3,9 @@ from pathlib import Path
 def expand_path(dir: str, extension: str):
     return str(Path(dir).joinpath(extension))
 
-def get_fastq_dict(base_dir: Path, fastq1_suffix: str, fastq2_suffix: str, sample_names: list) -> dict:
+def get_fastq_dict(base_dir: Path, fastq1_suffix: str, fastq2_suffix: str, coldata) -> dict:
     fastq_dict = dict()
+    sample_names = list(coldata.loc[:, "sample"])
     for sub_dir in base_dir.iterdir():
         if not sub_dir.is_dir():
             continue
@@ -24,4 +25,5 @@ def get_fastq_dict(base_dir: Path, fastq1_suffix: str, fastq2_suffix: str, sampl
             if len(sample_dict) == 2:
                 fastq_dict[sample_name] = sample_dict
                 break
+
     return fastq_dict

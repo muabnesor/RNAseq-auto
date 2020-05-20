@@ -11,6 +11,14 @@ rule build_star:
     shell:
         "sudo singularity build {output.sif_file} {params.image_url}"
 
+rule build_stringtie:
+    params:
+        image_url = config["containers"]['stringtie_container_url']
+    output:
+        sif_file = expand_path(container_dir, config["containers"]["stringtie_image"])
+    shell:
+        "sudo singularity build {output.sif_file} {params.image_url}"
+
 rule build_preprocess:
     params:
         image_url = config["containers"]['preprocess_container_url']

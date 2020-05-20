@@ -28,10 +28,14 @@ slurm_logdir_align.mkdir(parents=True, exist_ok=True)
 slurm_logdir_count = Path(slurm_logdir).joinpath("count")
 slurm_logdir_count.mkdir(parents=True, exist_ok=True)
 
+slurm_logdir_transcripts = Path(slurm_logdir).joinpath("transcripts")
+slurm_logdir_transcripts.mkdir(parents=True, exist_ok=True)
+
 # Set analysis subdirectories
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")
 align_dir = expand_path(analysis_dir, "align")
 count_dir = expand_path(analysis_dir, "count")
+transcripts_dir = expand_path(analysis_dir, "transcripts")
 
 # get sample data
 sample_data = config.get("sample_data") or expand_path(data_dir, "samples.tsv")
@@ -43,7 +47,7 @@ sample_names = list(coldata.loc[:, "sample"])
 fastq_dict = get_fastq_dict(base_dir=Path(data_dir),
                             fastq1_suffix=config["fastq1_suffix"],
                             fastq2_suffix=config["fastq2_suffix"],
-                            sample_names=sample_names)
+                            coldata=coldata)
 
 report: "report/workflow.rst"
 
@@ -64,6 +68,9 @@ include: "rules/align.smk"
 
 # Build count matrix
 include: "rules/count.smk"
+
+# Find transcripts
+include: "rules/transcribe.smk"
 
 # Perform DE-analysis with DESeq2
 #include: "rules/de.smk"
