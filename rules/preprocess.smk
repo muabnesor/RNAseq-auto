@@ -13,17 +13,15 @@ rule trim:
         get_fastqs
 
     output:
-        fastq_first = f"{trim_galore_dir}/{{sample}}/{{sample}}_{{lane}}{config['fastq1_suffix_trimmed']}",
-        fastq_second = f"{trim_galore_dir}/{{sample}}/{{sample}}_{{lane}}{config['fastq2_suffix_trimmed']}",
+        trim_dir = directory(f"{trim_galore_dir}/{{sample}}/"),
 
     singularity:
         f"{container_dir}/{config['containers']['preprocess_image']}"
     params:
         slurm_log_dir = f"{str(slurm_logdir_preprocess)}",
-        trim_dir = f"{trim_galore_dir}/{{sample}}/"
 
     shell:
-        "mkdir -p {params.trim_dir} && trim_galore --illumina --paired --fastqc -o {params.trim_dir} "
+        "mkdir -p {output.trim_dir} && trim_galore --stringency 5 --illumina --paired --fastqc -o {output.trim_dir} "
         "{input}"
 
 rule trimmed_multiqc:

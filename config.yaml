@@ -28,6 +28,10 @@ containers:
 
  htseq_image: "htseq.sif"
  htseq_container_url: "docker://muabnessor/htseq:0.1.0"
+
+ stringtie_image: "stringtie.sif"
+ stringtie_container_url: "docker://muabnessor/stringtie:0.1.0"
+
 # reference files
 
 references:
@@ -44,6 +48,11 @@ index:
  read_length: 150
  star_index_threads: 16
 
+transcribe:
+ stringtie_transcribe_threads: 4
+ stringtie_merge_threads: 4
+ stringtie_count_threads: 4
+ stringtie_matrix_threads: 4
 # Trimming
 
 pre_trim_fastq: False

@@ -1,6 +1,10 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v0.7.0 [2020-05-20]
+### Added
+- stringtie
+
 ## v0.6.0 [2020-05-05]
 ### Added
 - gene count rule
