@@ -42,3 +42,11 @@ rule build_htseq:
         sif_file = expand_path(container_dir, config["containers"]["htseq_image"])
     shell:
         "sudo singularity build {output.sif_file} {params.image_url}"
+
+rule build_salmon:
+    params:
+        image_url = config["containers"]['salmon_container_url']
+    output:
+        sif_file = expand_path(container_dir, config["containers"]["salmon_image"])
+    shell:
+        "sudo singularity build {output.sif_file} {params.image_url}"

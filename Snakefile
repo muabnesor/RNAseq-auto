@@ -31,11 +31,15 @@ slurm_logdir_count.mkdir(parents=True, exist_ok=True)
 slurm_logdir_transcripts = Path(slurm_logdir).joinpath("transcripts")
 slurm_logdir_transcripts.mkdir(parents=True, exist_ok=True)
 
+slurm_logdir_pseudo_map = Path(slurm_logdir).joinpath("pseudo_map")
+slurm_logdir_pseudo_map.mkdir(parents=True, exist_ok=True)
+
 # Set analysis subdirectories
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")
 align_dir = expand_path(analysis_dir, "align")
 count_dir = expand_path(analysis_dir, "count")
 transcripts_dir = expand_path(analysis_dir, "transcripts")
+pseudo_map_dir = expand_path(analysis_dir, "pseudo_map")
 
 # get sample data
 sample_data = config.get("sample_data") or expand_path(data_dir, "samples.tsv")
@@ -71,6 +75,9 @@ include: "rules/count.smk"
 
 # Find transcripts
 include: "rules/transcribe.smk"
+
+# Perform pseudo mapping with salmon
+include: "rules/pseudo_map.smk"
 
 # Perform DE-analysis with DESeq2
 #include: "rules/de.smk"
