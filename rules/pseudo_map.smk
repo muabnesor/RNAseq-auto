@@ -3,10 +3,6 @@ def get_fastqs(wildcards):
     fastq_second = f"{trim_galore_dir}/{wildcards.sample}/{fastq_dict[wildcards.sample]['fastq_second'].split('/')[-1].replace(config['fastq2_suffix'], config['fastq2_suffix_trimmed'])}"
     return [fastq_first, fastq_second]
 
-rule pseudo_map_all:
-    input:
-        f"{pseudo_map_dir}/merged_numreads.sf",
-        f"{pseudo_map_dir}/merged_tpm.sf"
 
 rule pseudo_map:
     input:

@@ -11,6 +11,11 @@ star_index:
   n: "16"
   time: "04:00:00"
 
+salmon_index:
+ name: "{rule}"
+ n: "4"
+ time: "04:00:00"
+
 trim:
   name: "{rule}.{wildcards.sample}"
   time: "16:00:00"
@@ -53,3 +58,18 @@ count_matrix:
   name: "{rule}"
   time: "04:00:00"
   n: "4"
+
+pseudo_map:
+ name: "{rule}.{wildcards.sample}"
+ time: "04:00:00"
+ n: "4"
+
+merge_quant_tpm:
+ name: "{rule}"
+ time: "04:00:00"
+ n: "1"
+
+merge_quant_numreads:
+ name: "{rule}"
+ time: "04:00:00"
+ n: "1"
