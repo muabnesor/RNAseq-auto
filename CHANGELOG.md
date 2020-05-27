@@ -1,6 +1,10 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v0.7.0 [2020-05-27]
+### Added
+- salmon
+
 ## v0.7.0 [2020-05-20]
 ### Added
 - stringtie

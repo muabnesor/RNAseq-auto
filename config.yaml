@@ -32,6 +32,9 @@ containers:
  stringtie_image: "stringtie.sif"
  stringtie_container_url: "docker://muabnessor/stringtie:0.1.0"
 
+ salmon_image: "salmon.sif"
+ salmon_container_url: "docker://muabnessor/salmon:0.1.0"
+
 # reference files
 
 references:
@@ -40,6 +43,9 @@ references:
  genome_file: "Homo_sapiens.GRCh38.dna.primary_assembly.fa"
  genome_url: "ftp://ftp.ensembl.org/pub/release-99/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz"
 
+ cdna_file: "Homo_sapiens.GRCh38.cdna.all.fa"
+ cdna_url: "ftp://ftp.ensembl.org/pub/release-99/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+
  transcripts_file: "Homo_sapiens.GRCh38.99.gtf"
  transcripts_url: "ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz"
 
@@ -47,12 +53,18 @@ index:
  # rule star_index
  read_length: 150
  star_index_threads: 16
+ salmon_index_threads: 4
 
 transcribe:
  stringtie_transcribe_threads: 4
  stringtie_merge_threads: 4
  stringtie_count_threads: 4
  stringtie_matrix_threads: 4
+
+#Transcript quantification with salmon
+quant:
+ salmon_quant_threads: 4
+ salmon_merge_threads: 4
 # Trimming
 
 pre_trim_fastq: False

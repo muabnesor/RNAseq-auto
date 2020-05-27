@@ -12,6 +12,15 @@ rule download_genome:
         "wget -O {output.genome_path}.gz {params.genome_url} && "
         "gunzip {output.genome_path}.gz"
 
+rule download_cdna:
+    params:
+        cdna_url = config["references"]["cdna_url"]
+    output:
+        cdna_path = expand_path(reference_dir, config["references"]["cdna_file"])
+    shell:
+        "wget -O {output.cdna_path}.gz {params.cdna_url} && "
+        "gunzip {output.cdna_path}.gz"
+
 rule download_transcripts:
     params:
         transcripts_url = config["references"]["transcripts_url"]
