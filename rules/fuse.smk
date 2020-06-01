@@ -24,4 +24,5 @@ rule fuse:
         "arriba -x {input.bam_file} "
         "-g {input.annotation_gtf} "
         "-a {input.genome_fasta} "
-        "-o {output.fusions}"
+        "-o {output.fusions} "
+        "-s auto"
