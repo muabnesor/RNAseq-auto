@@ -50,3 +50,11 @@ rule build_salmon:
         sif_file = expand_path(container_dir, config["containers"]["salmon_image"])
     shell:
         "sudo singularity build {output.sif_file} {params.image_url}"
+
+rule build_arriba:
+    params:
+        image_url = config["containers"]['arriba_container_url']
+    output:
+        sif_file = expand_path(container_dir, config["containers"]["arriba_image"])
+    shell:
+        "sudo singularity build {output.sif_file} {params.image_url}"

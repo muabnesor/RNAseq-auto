@@ -29,6 +29,16 @@ star_align:
   time: "08:00:00"
   n: "8"
 
+star_align:
+  name: "{rule}.{wildcards.sample}"
+  time: "08:00:00"
+  n: "8"
+
+star_graph:
+  name: "{rule}.{wildcards.sample}"
+  time: "04:00:00"
+  n: "2" 
+
 bam_index:
   name: "{rule}.{wildcards.sample}"
   time: "01:00:00"
