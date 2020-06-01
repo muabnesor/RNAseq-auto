@@ -35,7 +35,7 @@ slurm_logdir_pseudo_map = Path(slurm_logdir).joinpath("pseudo_map")
 slurm_logdir_pseudo_map.mkdir(parents=True, exist_ok=True)
 
 slurm_logdir_arriba = Path(slurm_logdir).joinpath("arriba")
-slur_logdir_arriba.mkdir(parents=True, exist_ok=True)
+slurm_logdir_arriba.mkdir(parents=True, exist_ok=True)
 
 # Set analysis subdirectories
 trim_galore_dir = expand_path(analysis_dir, "trim_galore")
