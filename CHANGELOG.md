@@ -1,6 +1,14 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
+## v0.9.0 [2020-06-01]
+### Added
+- Arriba: Arriba is a tool developed to extract possible gene fusion from STAR alignment
+- BEDGraphs from bam-files, for later visualisation.
+
+### Fixed
+- Fix the STAR aligement to output the chimeric reads into the output alignment file. This is done so that arriba can be used on the output.
+
 ## v0.8.0 [2020-05-27]
 ### Added
 - salmon
