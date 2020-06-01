@@ -66,6 +66,10 @@ rule bam_index:
     shell:
         "samtools index -@ {threads} {input.bam_file}"
 
+rule graph_all:
+    input:
+        expand(f"{align_dir}/graphs/{{sample}}", sample=sample_names)
+
 rule star_graph:
     input:
         bam_file = f"{align_dir}/{{sample}}.bam"

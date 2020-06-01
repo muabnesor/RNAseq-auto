@@ -89,5 +89,10 @@ include: "rules/fuse.smk"
 # Perform DE-analysis with DESeq2
 #include: "rules/de.smk"
 
+# Perform DUT with drimseq, stringtie, ballgown
+
+# Find consensues in diverging analyses
+
+
 # Compile results into report
 #include: "rules/compile.smk"
