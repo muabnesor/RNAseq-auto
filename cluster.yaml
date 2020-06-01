@@ -29,6 +29,16 @@ star_align:
   time: "08:00:00"
   n: "8"
 
+star_align:
+  name: "{rule}.{wildcards.sample}"
+  time: "08:00:00"
+  n: "8"
+
+star_graph:
+  name: "{rule}.{wildcards.sample}"
+  time: "04:00:00"
+  n: "2"
+
 bam_index:
   name: "{rule}.{wildcards.sample}"
   time: "01:00:00"
@@ -60,16 +70,21 @@ count_matrix:
   n: "4"
 
 pseudo_map:
- name: "{rule}.{wildcards.sample}"
- time: "04:00:00"
- n: "4"
+  name: "{rule}.{wildcards.sample}"
+  time: "04:00:00"
+  n: "4"
 
 merge_quant_tpm:
- name: "{rule}"
- time: "04:00:00"
- n: "1"
+  name: "{rule}"
+  time: "04:00:00"
+  n: "1"
 
 merge_quant_numreads:
- name: "{rule}"
- time: "04:00:00"
- n: "1"
+  name: "{rule}"
+  time: "04:00:00"
+  n: "1"
+
+fuse:
+  name: "{rule}.{wildcards.sample}"
+  time: "04:00:00"
+  n: "1"

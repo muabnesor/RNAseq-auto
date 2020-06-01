@@ -39,7 +39,16 @@ rule star_align:
         "--outSAMattributes Standard "
         "--readFilesCommand zcat "
         "--twopassMode Basic "
-        "--chimSegmentMin 20 && "
+        "--chimSegmentMin 20 "
+        "--chimOutType && WithinBAM SoftClip "
+        "--chimSegmentMin 10 "
+        "--chimJunctionOverhangMin 10 "
+        "--chimScoreMin 1 "
+        "--chimScoreDropMax 30 "
+        "--chimScoreJunctionNonGTAG 0 "
+        "--chimScoreSeparation 1 "
+        "--alignSJstitchMismatchNmax 5 -1 5 5 "
+        "--chimSegmentReadGapMax 3 "
         "mv {output.star_dir}/Aligned.sortedByCoord.out.bam {output.bam_file}"
 
 rule bam_index:
@@ -56,3 +65,31 @@ rule bam_index:
         f"{container_dir}/{config['containers']['samtools_image']}"
     shell:
         "samtools index -@ {threads} {input.bam_file}"
+
+rule graph_all:
+    input:
+        expand(f"{align_dir}/graphs/{{sample}}", sample=sample_names)
+
+rule star_graph:
+    input:
+        bam_file = f"{align_dir}/{{sample}}.bam"
+
+    output:
+        graph_dir = directory(f"{align_dir}/graphs/{{sample}}")
+
+    params:
+        slurm_log_dir = f"{str(slurm_logdir_align)}"
+
+    singularity:
+        f"{container_dir}/{config['containers']['star_image']}"
+
+    threads: config['align']["star_graph_threads"]
+
+    shell:
+        "mkdir -p {output.graph_dir} && "
+        "STAR --runMode inputAlignmentsFromBAM "
+        "--runThreadN {threads} "
+        "--inputBAMfile {input.bam_file} "
+        "--outWigType bedGraph "
+        "--outWigStrand Stranded "
+        "--outFileNamePrefix {output.graph_dir}"
