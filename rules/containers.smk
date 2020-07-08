@@ -58,3 +58,11 @@ rule build_arriba:
         sif_file = expand_path(container_dir, config["containers"]["arriba_image"])
     shell:
         "sudo singularity build {output.sif_file} {params.image_url}"
+
+rule build_R:
+    params:
+        image_url = config["containers"]['R_container_url']
+    output:
+        sif_file = expand_path(container_dir, config["containers"]["R_image"])
+    shell:
+        "sudo singularity build {output.sif_file} {params.image_url}"

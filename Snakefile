@@ -12,6 +12,7 @@ analysis_dir = str(Path(config["analysis_dir"]))
 reference_dir = str(Path(config["references"]["reference_dir"]))
 container_dir = str(Path(config["containers"]["container_dir"]))
 log_dir = str(Path(config["log_dir"]))
+scripts_dir = str(Path(config["scripts_dir"]))
 
 # Create slurm log dirs
 slurm_logdir = Path(log_dir).joinpath("slurm")
