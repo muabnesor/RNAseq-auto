@@ -31,10 +31,10 @@ rule fuse:
 rule fusion_genes:
     input:
         fusions = expand(f"{fusion_dir}/{{sample}}.tsv", sample=sample_names),
-        sample_data = f"sample_data"
+        sample_data = f"{sample_data}"
 
     output:
-        genes = "{fusion_dir}/fusion_genes.txt",
+        genes = f"{results_dir}/fusion-genes.txt",
 
     params:
         slurm_log_dir = f"{str(slurm_logdir_arriba)}"

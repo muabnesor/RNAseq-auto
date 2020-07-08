@@ -45,6 +45,7 @@ fusion_dir = expand_path(analysis_dir, "fusion")
 count_dir = expand_path(analysis_dir, "count")
 transcripts_dir = expand_path(analysis_dir, "transcripts")
 pseudo_map_dir = expand_path(analysis_dir, "pseudo_map")
+results_dir = expand_path(analysis_dir, "results")
 
 # get sample data
 sample_data = config.get("sample_data") or expand_path(data_dir, "samples.tsv")
