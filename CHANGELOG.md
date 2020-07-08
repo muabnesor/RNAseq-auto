@@ -1,7 +1,12 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
-## v0.9.0 [2020-06-02]
+## v0.10.0 [2020-06-08]
+### Added
+- Get list of genes with frequent fusions in treated samples
+
+
+## v0.9.1 [2020-06-02]
 ### Fixed
 - STAR command call
 
