@@ -11,6 +11,9 @@ analysis_dir: "analysis/"
 # Log dir
 log_dir: "analysis/log/"
 
+# Scripts dir
+scripts_dir: "scripts/"
+
 # Container images
 
 containers:
@@ -37,6 +40,9 @@ containers:
 
  arriba_image: "arriba.sif"
  arriba_container_url: "docker://muabnessor/arriba:0.1.0"
+
+ R_image: "RRNA.sif"
+ R_container_url: "docker://muabnessor/rrna:0.1.0"
 
 # reference files
 

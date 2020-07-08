@@ -88,3 +88,8 @@ fuse:
   name: "{rule}.{wildcards.sample}"
   time: "04:00:00"
   n: "1"
+
+fusion_genes:
+  name: "{rule}"
+  time: "00:10.00"
+  n: "1"
