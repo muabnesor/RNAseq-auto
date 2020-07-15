@@ -76,3 +76,45 @@ rule merge_quant_numreads:
         "--quants {input} "
         "-c numreads "
         "-o {output}"
+
+
+rule salmon_deseq2:
+    input:
+        gene_db = expand_path(reference_dir, "genes.sqllite"),
+        count_files = expand(f"{pseudo_map_dir}/{{sample}}", sample=sample_names),
+        sample_data = f"{sample_data}",
+        transcripts_gtf = expand_path(reference_dir, config["references"]["transcripts_file"])
+
+    output:
+        f"{results_dir}/salmon-deseq2/salmon-deseq2.html"
+
+    singularity: f"{container_dir}/{config['containers']['R_image']}"
+
+    params:
+        slurm_log_dir = f"{str(slurm_logdir_count)}",
+        count_dir = f"{pseudo_map_dir}"
+
+    threads: 1
+
+    script: "../scripts/salmon-deseq2.Rmd"
+
+
+rule salmon_drimseq:
+    input:
+        gene_db = expand_path(reference_dir, "genes.sqllite"),
+        count_files = expand(f"{pseudo_map_dir}/{{sample}}", sample=sample_names),
+        sample_data = f"{sample_data}",
+        transcripts_gtf = expand_path(reference_dir, config["references"]["transcripts_file"])
+
+    output:
+        f"{results_dir}/salmon-drimseq/salmon-drimseq.html"
+
+    singularity: f"{container_dir}/{config['containers']['R_image']}"
+
+    params:
+        slurm_log_dir = f"{str(slurm_logdir_count)}",
+        count_dir = f"{pseudo_map_dir}"
+
+    threads: 1
+
+    script: "../scripts/salmon-drimseq.Rmd"

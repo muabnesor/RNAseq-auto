@@ -89,12 +89,9 @@ include: "rules/pseudo_map.smk"
 include: "rules/fuse.smk"
 
 # Perform DE-analysis with DESeq2
-#include: "rules/de.smk"
-
-# Perform DUT with drimseq, stringtie, ballgown
-
-# Find consensues in diverging analyses
-
-
-# Compile results into report
-#include: "rules/compile.smk"
+rule all:
+    input:
+        f"{results_dir}/ballgown/ballgown.html",
+        f"{results_dir}/salmon-drimseq/salmon-drimseq.html",
+        f"{results_dir}/salmon-deseq2/salmon-deseq2.html",
+        f"{results_dir}/htseq-deseq2/htseq-deseq2.html"

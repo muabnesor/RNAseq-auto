@@ -91,5 +91,30 @@ fuse:
 
 fusion_genes:
   name: "{rule}"
-  time: "00:10.00"
+  time: "00:10:00"
   n: "1"
+
+build_genes:
+  name: "{rule}"
+  time: "02:00:00"
+  n: "4"
+
+salmon_deseq2:
+  name: "{rule}"
+  time: "02:00:00"
+  n: "4"
+
+salmon_drimseq:
+  name: "{rule}"
+  time: "02:00:00"
+  n: "4"
+
+ballgown:
+  name: "{rule}"
+  time: "02:00:00"
+  n: "4"
+
+htseq_deseq2:
+  name: "{rule}"
+  time: "02:00:00"
+  n: "4"

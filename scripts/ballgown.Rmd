@@ -1,0 +1,113 @@
+---
+title: "ballgown"
+author:
+    - "RNA-auto"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+   rmd: "ballgown.Rmd"
+output:
+  html_document:
+  highlight: tango
+  number_sections: no
+  theme: default
+  toc: yes
+  toc_depth: 3
+  toc_float:
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ballgown Analysis of stringtie output
+
+```{r load_libraries, message=FALSE, warning=FALSE}
+library(ballgown)
+library(genefilter)
+library(dplyr)
+library(pheatmap)
+library(rtracklayer)
+library(kableExtra)
+```
+
+```{r load_data, message=FALSE, warning=FALSE}
+sample.data <- as.character(snakemake@input[["sample_data"]])
+count.dirs <- unlist(snakemake@input[["count_dirs"]])
+merged.gtf <- as.character(snakemake@input[["merged_gtf"]])
+
+out.file <- as.character(snakemake@output)
+out.dir <- dirname(out.file)
+out.list <- paste0(out.dir, "/transcripts-list.tsv")
+
+colData <- read.table(sample.data, header = TRUE)
+colData$group <- sub("-","_",colData$group)
+```
+
+```{r build_ballgown, message=FALSE, warning=FALSE}
+
+bg_data <- ballgown(samples = count.dirs,
+                    pData = colData)
+
+reference = import(merged.gtf)
+
+mapping <- data.frame(gene_id=reference$gene_id,
+                      gene_name=reference$gene_name,
+                      chr=seqnames(reference),
+                      start=start(ranges(reference)),
+                      start=end(ranges(reference)))
+mapping <- mapping[!is.na(mapping$gene_name),]
+
+bg_filt <- subset(bg_data, "rowVars(texpr(bg_data)) > 0.1", genomesubset=TRUE)
+
+tExpr <- texpr(bg_data, "all")
+
+tRes <- stattest(bg_data,
+                 feature="transcript",
+                 covariate = "condition",
+                 getFC=TRUE, meas="FPKM")
+
+tRes <- data.frame(geneNames = geneNames(bg_data),
+                   geneIDs = geneIDs(bg_data),
+                   transcriptIDs = transcriptIDs(bg_data),
+                   transcriptNames = transcriptNames(bg_data),
+                   tRes)
+
+tResSort <- tRes[order(tRes$qval),]
+tResSign <- tResSort[which(tResSort$fc > 2 | tResSort$fc < 0.5), ][1:50,]
+
+mat <- match(tResSign$geneIDs, mapping$gene_id)
+
+names <- mapping[mat, "gene_name"]
+tResSign$geneNames <- mapping[mat, "gene_name"]
+tResSign$chr <- mapping[mat, "chr"]
+tResSign$start <- mapping[mat, "start"]
+tResSign$end <- mapping[mat, "end"]
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+write.table(tResSign[1:50, ], file=out.list, quote=FALSE, sep="\t", row.names=T)
+```
+
+```{r, message=FALSE, warning=FALSE}
+kable(tResSign, "html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+```
+
+```{r , fig.width=18, message=FALSE, warning=FALSE, results='asis'}
+for (i in 1:50){
+  cat(paste("##", tResSign[i,"geneNames"], "\n\n"))
+  cat(paste("id: ", tResSign[i,"transcriptIDs"], " name: ",tResSign[i,"transcriptNames"], " chr: ", tResSign[i,"chr"],"\n\n"))
+  cat(paste("pval: ", tResSign[i,"pval"], " qval: ",tResSign[i,"qval"], " fold count: ", tResSign[i,"fc"], "\n\n"))
+
+  plotMeans(meas="FPKM",
+            gene=tResSign[i,"geneIDs"],  
+            gown=bg_data,
+            groupvar="condition",
+            colorby="transcript",
+            labelTranscripts=TRUE)
+  cat("\n\n")
+}
+
+```

@@ -59,7 +59,7 @@ rule count_transcripts:
         merged_gtf = f"{transcripts_dir}/merged.gtf"
 
     output:
-        count_file = f"{transcripts_dir}/counts/{{sample}}.ctab",
+        count_dir = directory(f"{transcripts_dir}/counts/{{sample}}"),
         gtf_file = f"{transcripts_dir}/counts/{{sample}}.gtf"
 
 
@@ -76,7 +76,7 @@ rule count_transcripts:
         "mkdir -p {params.count_dir} && "
         "stringtie {input.bam_file} "
         "-p {threads} "
-        "-e -b {output.count_file} "
+        "-e -b {output.count_dir} "
         "-o {output.gtf_file} "
         "-G {input.merged_gtf} "
 
@@ -104,3 +104,22 @@ rule count_matrix:
         "-l 151 "
         "-g {output.gene_count_matrix} "
         "-t {output.transcript_count_matrix}"
+
+
+rule ballgown:
+    input:
+        count_dirs = expand(f"{transcripts_dir}/counts/{{sample}}", sample=sample_names),
+        sample_data = f"{sample_data}",
+        merged_gtf = f"{transcripts_dir}/merged.gtf"
+
+    output:
+        f"{results_dir}/ballgown/ballgown.html"
+
+    params:
+        slurm_log_dir = f"{str(slurm_logdir_transcripts)}"
+
+    singularity: f"{container_dir}/{config['containers']['R_image']}"
+
+    threads: 1
+
+    script: f"../scripts/ballgown.Rmd"
