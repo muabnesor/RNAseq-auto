@@ -1,0 +1,159 @@
+---
+title: "salmon-drimseq"
+author:
+    - "RNA-auto"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+   rmd: "salmon-drimseq.Rmd"
+output:
+  html_document:
+  highlight: tango
+  number_sections: no
+  theme: default
+  toc: yes
+  toc_depth: 3
+  toc_float:
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+```{r load_libraries, message=FALSE, warning=FALSE}
+library("DRIMSeq")
+library("ggplot2")
+library("ashr")
+library("gridExtra")
+library("grid")
+library("GenomicFeatures")
+library("tximport")
+```
+
+## Get I/O from snakemake
+
+```{r get_io, message=FALSE, warning=FALSE}
+# Load the count data and the meta data for the samples
+
+out.html <- as.character(snakemake@output)
+out.list <- paste0(dirname(out.html), "/salmon_gene_list.tsv")
+
+col_data_file <- as.character(snakemake@input[["sample_data"]])
+colData <- read.table(col_data_file, header = TRUE)
+colData$group <- sub("-","_",colData$group)
+
+gtf.file <- as.character(snakemake@input[["transcripts_gtf"]])
+
+gene.db <- as.character(snakemake@input[["gene_db"]])
+
+count.dir <- as.character(snakemake@params[["count_dir"]])
+count.files <- file.path(count.dir,  colData$sample_id, "quant.sf")
+
+sampleNames <- basename(sub("/quant.sf", "", count.files))
+names(count.files) <- sampleNames
+
+sampleTable <- data.frame(sampleName = sampleNames,
+                          fileName = count.files,
+                          condition = colData$condition,
+                          group = colData$group)
+```
+
+
+## Load transcripts
+```{r load_transcripts, message=FALSE, warning=FALSE}
+txdb <- makeTxDbFromGFF(gtf.file)
+txdf <- select(txdb, keys(txdb, "GENEID"), "TXNAME", "GENEID")
+tab <- table(txdf$GENEID)
+txdf$ntx <- tab[match(txdf$GENEID, names(tab))]
+```
+
+## Load genes
+
+```{r load_genes, message=FALSE, warning=FALSE}
+library("ensembldb")
+EDB <- EnsDb(gene.db)
+ensembl.genes <- genes(EDB)
+seqlevels(ensembl.genes) <- paste0("chr", seqlevels(ensembl.genes))
+```
+
+## Aggrgate counts with tximport
+```{r tximport, message=FALSE, warning=FALSE}
+txi <- tximport(count.files, type="salmon", txOut=TRUE,
+                countsFromAbundance="scaledTPM")
+```
+
+## Get counts
+```{r get_counts, message=FALSE, warning=FALSE}
+cts <- txi$counts
+cts <- cts[rowSums(cts) > 0,]
+rownames(cts) <- gsub("\\..*","",rownames(cts))
+cts <- cts[which(rownames(cts) %in% txdf$TXNAME),]
+txdf <- txdf[match(rownames(cts),txdf$TXNAME),]
+colData$sample_id <- gsub("-", "." ,colData$sample_id)
+counts <- data.frame(gene_id=txdf$GENEID, feature_id=txdf$TXNAME, cts)
+```
+
+## Run DRIMSeq
+```{r run_drimseq, warning=FALSE}
+d <- dmDSdata(counts=counts, samples=colData)
+
+n <- nrow(colData)
+min_samples <- round(n*0.9)
+d <- dmFilter(d,
+              min_samps_feature_expr=min_samples, min_feature_expr=n,
+              min_samps_feature_prop=min_samples, min_feature_prop=0.1,
+              min_samps_gene_expr=n, min_gene_expr=n)
+
+design_full <- model.matrix(~condition, data=DRIMSeq::samples(d))
+model_coef <- tail(colnames(design_full),1)
+
+set.seed(1)
+d <- dmPrecision(d, design=design_full)
+d <- dmFit(d, design=design_full)
+d <- dmTest(d, coef=model_coef)
+```
+
+
+## Get Results
+```{r get_results, message=FALSE, warning=FALSE}
+res <- DRIMSeq::results(d)
+no.na <- function(x) ifelse(is.na(x), 1, x)
+res$pvalue <- no.na(res$pvalue)
+res <- res[order(res$adj_pvalue),]
+res <- res[1:50,]
+res$gene_name <- ensembl.genes[res$gene_id,]$gene_name
+res$chrom <- as.character(seqnames(ensembl.genes[res$gene_id,]))
+res$start <- start(ensembl.genes[res$gene_id,])
+res$end <- end(ensembl.genes[res$gene_id,])
+
+```
+## Genes with differential transcript usage
+```{r print_genes, message=FALSE, warning=FALSE}
+library(kableExtra)
+kable(res, "html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+```
+```{r write_genes, message=FALSE, warning=FALSE}
+write.table(res, file=out.list, quote=FALSE, sep="\t", row.names=T)
+```
+
+## Plot precision and p-values
+```{r precision_pvalues_plots, message=FALSE, warning=FALSE}
+plotPrecision(d)
+plotPValues(d)
+```
+
+## Plot proportions for each genes
+```{r , fig.width=18, fig.height=14, message=FALSE, warning=FALSE, results='asis'}
+for (i in 1:50){
+  cat(paste("###", res[i,"gene_name"], "\n\n"))
+  cat(paste(" chr: ", res[i,"chrom"],"\n\n"))
+  cat(paste("pval: ", res[i,"pvalue"], " adj_pvalue: ", res[i,"adj_pvalue"], " likelihood ratio: ", res[i,"lr"], "\n\n"))
+
+  gene.id <- as.character(res[i,"gene_id"])
+  print(plotProportions(d, gene.id, "condition"))
+  cat("\n\n")
+}
+
+```

@@ -43,4 +43,4 @@ rule fusion_genes:
 
     threads: 1
 
-    script: f"{scripts_dir}/fusions.R"
+    script: f"../scripts/fusions.R"

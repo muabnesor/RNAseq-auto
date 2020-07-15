@@ -1,0 +1,232 @@
+---
+title: "salmon-deseq2"
+author:
+    - "RNA-auto"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+   rmd: "salmon-deseq2.Rmd"
+output:
+  html_document:
+  highlight: tango
+  number_sections: no
+  theme: default
+  toc: yes
+  toc_depth: 3
+  toc_float:
+    collapsed: no
+    smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# DESeq2 analysis with tximport on salmon output
+
+## Load libraries
+```{r load_libraries, message=FALSE, warning=FALSE}
+library("DESeq2")
+library("vsn")
+library("pheatmap")
+library("EnhancedVolcano")
+library("apeglm")
+library("ggplot2")
+library("ashr")
+library("gridExtra")
+library("grid")
+library("GenomicFeatures")
+library("rtracklayer")
+library("tximport")
+```
+
+## Get I/O from snakemake
+
+```{r get_io, message=FALSE, warning=FALSE}
+# Load the count data and the meta data for the samples
+
+out.html <- as.character(snakemake@output)
+out.list <- paste0(dirname(out.html), "/salmon_gene_list.tsv")
+
+col_data_file <- as.character(snakemake@input[["sample_data"]])
+colData <- read.table(col_data_file, header = TRUE)
+colData$group <- sub("-","_",colData$group)
+
+gtf.file <- as.character(snakemake@input[["transcripts_gtf"]])
+
+gene.db <- as.character(snakemake@input[["gene_db"]])
+
+count.dir <- as.character(snakemake@params[["count_dir"]])
+count.files <- file.path(count.dir,  colData$sample_id, "quant.sf")
+
+sampleNames <- basename(sub("/quant.sf", "", count.files))
+names(count.files) <- sampleNames
+
+sampleTable <- data.frame(sampleName = sampleNames,
+                          fileName = count.files,
+                          condition = colData$condition,
+                          group = colData$group)
+```
+
+## Load genes from gtf
+```{r load_genes, message=FALSE, warning=FALSE}
+library("ensembldb")
+EDB <- EnsDb(gene.db)
+ensembl.genes <- genes(EDB)
+seqlevels(ensembl.genes) <- paste0("chr", seqlevels(ensembl.genes))
+```
+
+## Load transcripts
+```{r load_transcripts, message=FALSE, warning=FALSE}
+txdb <- makeTxDbFromGFF(gtf.file)
+txdf <- select(txdb, keys(txdb, "GENEID"), "TXNAME", "GENEID","CHR")
+tab <- table(txdf$GENEID)
+txdf$ntx <- tab[match(txdf$GENEID, names(tab))]
+
+```
+
+## Map transcripts to genes
+```{r map_transcripts, message=FALSE, warning=FALSE}
+k <- keys(txdb, keytype = "TXNAME")
+tx2gene <- select(txdb, k, "GENEID", "TXNAME")
+```
+
+## aggregate transcripts with tximport
+```{r use_tximport, message=FALSE, warning=FALSE}
+library(tximport)
+txi <- tximport(count.files, type = "salmon", tx2gene = tx2gene, ignoreTxVersion=TRUE)
+```
+
+```{r assemble_data, message=FALSE, warning=FALSE}
+# Make the count data into a dataframe that can be passed on to DESeq2
+dds <-DESeqDataSetFromTximport(txi, sampleTable, ~condition)
+
+#keep <- apply(counts(dds), 1, function(x){all(x > 5) && sum(x) > 150 } )
+keep <- apply(counts(dds), 1, function(x){sum(x) > 150 } )
+dds <- dds[keep,]
+dds$group <- factor(dds$group)
+dds$condition <- factor(dds$condition, levels=c("A","C"))
+
+```
+
+## Run DESeq2
+```{r run_deseq2, message=FALSE, warning=FALSE}
+# Run DESeq
+dds <- DESeq(dds)
+```
+
+## Plot standard deviation of genes over mean
+
+### For log2 normalized counts
+```{r ntd_plot, message=FALSE, warning=FALSE}
+ntd <- normTransform(dds)
+vsd <- vst(dds)
+meanSdPlot(assay(ntd))
+```
+### For vst transformed data
+
+```{r vsd_plot, message=FALSE, warning=FALSE}
+meanSdPlot(assay(vsd))
+```
+
+## Plot the estimated dispersion of the genes over mean
+```{r plot_disp, message=FALSE, warning=FALSE}
+plotDispEsts(dds)
+```
+
+## heatmap for the samples vs the 500 genes with highest variance
+
+```{r heatmap, message=FALSE, warning=FALSE}
+select <- order(rowVars(counts(dds,normalized=TRUE), decreasing=TRUE),
+               decreasing=TRUE)[1:500]
+df <- as.data.frame(colData(dds)[,c("group", "condition")])
+DAT <- assay(vsd)[select,]
+rownames(df) <- colnames(DAT)
+pheatmap(DAT, cluster_rows=TRUE, show_rownames=FALSE,
+         cluster_cols=TRUE, annotation_col=df)
+```
+
+## PCA
+```{r pca, message=FALSE, warning=FALSE}
+library("PCAtools")
+
+metadata <- data.frame(condition=dds$condition)
+metadata$group <- dds$group
+row.names(metadata) <- colnames(assay(vsd))
+
+
+p <- pca(assay(vsd), metadata = metadata, removeVar = 0)
+biplot(p, colby="group", shape= "condition", legendPosition = "top")
+pairsplot(p, colby="condition", components=getComponents(p, c(1:5)), margingaps = unit(c(-0.01, -0.01, -0.01, -0.01), "cm"))
+```
+
+## Results
+
+```{r get_results, message=FALSE, warning=FALSE}
+conditions <- unique(as.character(dds$condition))
+conditions <- paste0("condition_", conditions[2],"_vs_", conditions[1])
+res <- results(dds, name=conditions)
+res <- lfcShrink(dds, coef=conditions, res=res, type = 'apeglm')
+```
+
+### Volcano plots
+```{r volcano, message=FALSE, warning=FALSE}
+pCutoff = 10e-10
+EnhancedVolcano(res,
+    lab = rownames(res),
+    x = 'log2FoldChange',
+    y = 'pvalue',
+    xlim = c(-10, 10),
+    title = 'A versus C; apeglm shrunken lfc',
+    pCutoff = pCutoff,
+    FCcutoff = 2,
+    pointSize = 3.0,
+    labSize = 3.0)
+```
+zoomed in volcano
+
+```{r volcano_zoom, message=FALSE, warning=FALSE}
+EnhancedVolcano(res,
+    lab = rownames(res),
+    x = 'log2FoldChange',
+    y = 'pvalue',
+    xlim = c(-10, 10),
+    ylim = c(0,30),
+    title = 'zoom in',
+    pCutoff = pCutoff,
+    FCcutoff = 2,
+    pointSize = 3.0,
+    labSize = 3.0)
+```
+
+### Plot counts for lowest padj
+```{r plot_counts, message=FALSE, warning=FALSE}
+d <- plotCounts(dds, gene=which.min(res$padj), intgroup= c("condition", "group"), returnData=TRUE)
+ggplot(d, aes(x=condition, y=count, shape=condition, col=group)) +
+              geom_point(position=position_jitter(w=0.1,h=0.1))
+```
+
+### Plot counts for highest l2fc
+```{r plot_counts_fc, message=FALSE, warning=FALSE}
+d <- plotCounts(dds, gene=which.max(abs(res$log2FoldChange)), intgroup= c("condition", "group"), returnData=TRUE)
+ggplot(d, aes(x=condition, y=count, shape=condition, col=group)) +
+              geom_point(position=position_jitter(w=0.1,h=0.1))
+```
+
+### 100 most significant genes
+```{r top_genes, message=FALSE, warning=FALSE}
+resSignificant <- res[which(abs(res$log2FoldChange) > 1),]
+resSignificant <- resSignificant[which(resSignificant$padj < 0.05),]
+resSignificant <- resSignificant[order(resSignificant$padj),][1:100,]
+resSignificant$gene_name <- ensembl.genes[rownames(resSignificant), ]$gene_name
+resSignificant$chrom <- seqnames(ensembl.genes[rownames(resSignificant),])
+resSignificant$start <- start(ensembl.genes[rownames(resSignificant),])
+resSignificant$end <- end(ensembl.genes[rownames(resSignificant),])
+```
+```{r print_genes, message=FALSE, warning=FALSE}
+library(kableExtra)
+kable(resSignificant, "html") %>% kable_styling("striped") %>% scroll_box(width = "100%")
+```
+
+```{r write_genes, message=FALSE, warning=FALSE}
+write.table(resSignificant, file=out.list, quote=FALSE, sep="\t", row.names=T)
+```
