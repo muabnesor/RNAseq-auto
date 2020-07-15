@@ -1,7 +1,11 @@
 # CHANGELOG
 All pushed to the repository must be noted here
 
-## v0.10.0 [2020-06-08]
+## v0.11.0 [2020-07-15]
+### Added
+- r-markdown for ballgown, deseq2, drimseq
+
+## v0.10.0 [2020-07-08]
 ### Added
 - Get list of genes with frequent fusions in treated samples
 
