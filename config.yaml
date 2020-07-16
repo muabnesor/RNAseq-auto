@@ -42,7 +42,7 @@ containers:
  arriba_container_url: "docker://muabnessor/arriba:0.1.0"
 
  R_image: "RRNA.sif"
- R_container_url: "docker://muabnessor/rrna:0.5.0"
+ R_container_url: "docker://muabnessor/rrna:0.6.0"
 
 # reference files
 

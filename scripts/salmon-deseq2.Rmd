@@ -56,7 +56,7 @@ gtf.file <- as.character(snakemake@input[["transcripts_gtf"]])
 gene.db <- as.character(snakemake@input[["gene_db"]])
 
 count.dir <- as.character(snakemake@params[["count_dir"]])
-count.files <- file.path(count.dir,  colData$sample_id, "quant.sf")
+count.files <- file.path(count.dir,  colData$sample, "quant.sf")
 
 sampleNames <- basename(sub("/quant.sf", "", count.files))
 names(count.files) <- sampleNames

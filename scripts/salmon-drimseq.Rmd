@@ -49,7 +49,7 @@ gtf.file <- as.character(snakemake@input[["transcripts_gtf"]])
 gene.db <- as.character(snakemake@input[["gene_db"]])
 
 count.dir <- as.character(snakemake@params[["count_dir"]])
-count.files <- file.path(count.dir,  colData$sample_id, "quant.sf")
+count.files <- file.path(count.dir,  colData$sample, "quant.sf")
 
 sampleNames <- basename(sub("/quant.sf", "", count.files))
 names(count.files) <- sampleNames
@@ -91,7 +91,7 @@ cts <- cts[rowSums(cts) > 0,]
 rownames(cts) <- gsub("\\..*","",rownames(cts))
 cts <- cts[which(rownames(cts) %in% txdf$TXNAME),]
 txdf <- txdf[match(rownames(cts),txdf$TXNAME),]
-colData$sample_id <- gsub("-", "." ,colData$sample_id)
+colData$sample_id <- gsub("-", "." ,colData$sample)
 counts <- data.frame(gene_id=txdf$GENEID, feature_id=txdf$TXNAME, cts)
 ```
 
